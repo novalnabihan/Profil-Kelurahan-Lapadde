@@ -4,6 +4,7 @@ import HeroSection from '@/features/site/ui/HeroSection';
 import ServicesSection from '@/features/site/ui/ServicesSection';
 import VisionMissionSection from '@/features/site/ui/VisionMissionSection';
 import StrukturSection from '@/features/struktur/ui/StrukturSection';
+import PetaSimpleSection from '@/features/peta/ui/PetaSimpleSection';
 import EventsPreviewSection from '@/features/events/ui/EventsPreviewSection';
 import ContactSection from '@/features/site/ui/ContactSection';
 
@@ -70,6 +71,8 @@ export default async function HomePage() {
           mission={data.profile.mission}
         />
         <StrukturSection members={data.struktur} />
+        <PetaSimpleSection />
+
         <EventsPreviewSection events={data.events} />
         <ContactSection />
       </main>
