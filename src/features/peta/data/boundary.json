@@ -1,0 +1,26 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kelurahan Lapadde",
+        "area": "3.2 km²"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [104.0440, 1.1180],
+            [104.0480, 1.1180],
+            [104.0485, 1.1200],
+            [104.0480, 1.1210],
+            [104.0440, 1.1210],
+            [104.0435, 1.1200],
+            [104.0440, 1.1180]
+          ]
+        ]
+      }
+    }
+  ]
+}
