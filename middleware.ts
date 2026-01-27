@@ -34,11 +34,9 @@ export async function middleware(request: NextRequest) {
 
     if (!user) {
       // No session, redirect to login
-      return NextResponse.redirect(new URL('/admin/login', request.url))
+      const url = new URL('/admin/login', request.url)
+      return NextResponse.redirect(url)
     }
-
-    // TODO: Check if user.email exists in Admin table
-    // For now, we'll check in the page component
 
     return supabaseResponse
   }
