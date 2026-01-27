@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -11,8 +5,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
-
 
 model SiteProfile {
   id            String   @id @default(uuid())
@@ -36,25 +30,25 @@ model Struktur {
 model RtRw {
   id         String   @id @default(uuid())
   type       String   // "RW" atau "RT"
-  number     String   // nomor RW/RT (contoh: "01", "02", "03")
+  number     String   // nomor RW/RT (contoh: "01", "02")
   
-  // Relasi parent-child untuk RT yang berada di bawah RW
+  // Relasi parent-child
   rwParentId String?
   rwParent   RtRw?    @relation("RTtoRW", fields: [rwParentId], references: [id], onDelete: Cascade)
   rtChildren RtRw[]   @relation("RTtoRW")
   
-  // Informasi ketua
-  leader     String   // nama ketua RW/RT
-  phone      String?  // nomor telepon/WhatsApp
-  address    String?  // alamat lengkap
-  photoUrl   String?  // URL foto ketua
+  // Info ketua
+  leader     String
+  phone      String?
+  address    String?
+  photoUrl   String?
   
-  // Koordinat untuk peta
-  latitude   Float?   // koordinat latitude
-  longitude  Float?   // koordinat longitude
+  // Koordinat untuk map
+  latitude   Float?
+  longitude  Float?
   
   // Metadata
-  order      Int      // untuk sorting tampilan
+  order      Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -75,6 +69,6 @@ model Event {
 }
 
 model Admin {
-  id    String @id
-  email String @unique
+  id    String @id      // Supabase User UID
+  email String @unique  // Email admin
 }
