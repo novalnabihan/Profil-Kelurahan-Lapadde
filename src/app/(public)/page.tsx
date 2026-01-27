@@ -73,7 +73,7 @@ export default async function HomePage() {
         <StrukturSection members={data.struktur} />
         <PetaSimpleSection />
 
-        <EventsPreviewSection events={data.events} />
+        {/* <EventsPreviewSection events={data.events} /> */}
         <ContactSection />
       </main>
       <MainFooter />
