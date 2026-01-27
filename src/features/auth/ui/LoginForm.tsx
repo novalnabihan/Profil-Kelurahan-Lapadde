@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { createClient } from '@/lib/supabase/client'
-import { Loader2 } from 'lucide-react'
+import { Loader2, AlertCircle } from 'lucide-react'
 
 export default function LoginForm() {
   const router = useRouter()
@@ -22,7 +22,8 @@ export default function LoginForm() {
 
     const supabase = createClient()
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({
+    // Sign in with Supabase
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
@@ -33,15 +34,19 @@ export default function LoginForm() {
       return
     }
 
-    // Redirect to dashboard
-    router.push('/admin/dashboard')
+    // Check if user is admin (email exists in Admin table)
+    // This will be checked by middleware/layout, so just redirect
+    router.push('/dashboard')
     router.refresh()
   }
 
   return (
-    <form onSubmit={handleLogin} className="space-y-4">
+    <form onSubmit={handleLogin} className="space-y-5">
+      {/* Email Field */}
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+          Email
+        </Label>
         <Input
           id="email"
           type="email"
@@ -50,11 +55,15 @@ export default function LoginForm() {
           onChange={(e) => setEmail(e.target.value)}
           required
           disabled={loading}
+          className="h-11"
         />
       </div>
 
+      {/* Password Field */}
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+          Password
+        </Label>
         <Input
           id="password"
           type="password"
@@ -63,18 +72,27 @@ export default function LoginForm() {
           onChange={(e) => setPassword(e.target.value)}
           required
           disabled={loading}
+          className="h-11"
         />
       </div>
 
+      {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-          {error}
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm font-medium text-red-800">{error}</p>
+            <p className="text-xs text-red-700 mt-1">
+              Pastikan email dan password benar
+            </p>
+          </div>
         </div>
       )}
 
+      {/* Submit Button */}
       <Button
         type="submit"
-        className="w-full bg-[#8b9474] hover:bg-[#6d7558]"
+        className="w-full h-11 bg-[#8b9474] hover:bg-[#6d7558] text-white font-medium"
         disabled={loading}
       >
         {loading ? (
@@ -86,6 +104,11 @@ export default function LoginForm() {
           'Masuk'
         )}
       </Button>
+
+      {/* Helper Text */}
+      <p className="text-xs text-center text-gray-500 mt-4">
+        Hanya admin yang memiliki akses ke halaman ini
+      </p>
     </form>
   )
 }
