@@ -16,14 +16,14 @@ export default function MainNavbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { href: '/#beranda', label: 'Beranda', type: 'anchor' },
-    { href: '/#visi-misi', label: 'Visi & Misi', type: 'anchor' },
-    { href: '/#struktur', label: 'Struktur', type: 'anchor' },
-    { href: '/#peta', label: 'Peta', type: 'anchor' },
-    { href: '/rt-rw', label: 'RT/RW', type: 'page' },
-    { href: '/kegiatan', label: 'Kegiatan', type: 'page' },
-  ];
+ const navLinks = [
+  { href: '/#beranda', label: 'Beranda', type: 'anchor' },
+  { href: '/#visi-misi', label: 'Visi & Misi', type: 'anchor' },
+  { href: '/#struktur', label: 'Struktur', type: 'anchor' },
+  { href: '/#peta', label: 'Peta', type: 'anchor' },
+  { href: '/rt-rw', label: 'RT/RW', type: 'page' },
+  { href: '/tentang', label: 'Tentang', type: 'page' },  // ← Tambah ini
+];
 
   const isActive = (href: string) => {
     if (href.startsWith('/#')) {
