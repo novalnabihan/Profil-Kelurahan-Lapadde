@@ -39,6 +39,11 @@ export default function ImageUpload({ value, onChange, folder, label }: ImageUpl
       const formData = new FormData()
       formData.append('file', file)
       formData.append('folder', folder)
+      
+      // Pass old URL to be deleted
+      if (value) {
+        formData.append('oldUrl', value)
+      }
 
       const response = await fetch('/api/upload', {
         method: 'POST',
@@ -63,10 +68,29 @@ export default function ImageUpload({ value, onChange, folder, label }: ImageUpl
     }
   }
 
-  const handleRemove = () => {
-    onChange('')
-  }
+  const handleRemove = async () => {
+    if (!value) return
 
+    if (!confirm('Hapus gambar ini?')) return
+
+    try {
+      // Call delete API
+      const response = await fetch('/api/upload', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: value }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Delete failed')
+      }
+
+      onChange('')
+    } catch (error) {
+      console.error('Delete error:', error)
+      alert('Gagal menghapus gambar')
+    }
+  }
 
   return (
     <div className="space-y-4">
