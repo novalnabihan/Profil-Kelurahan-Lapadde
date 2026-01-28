@@ -5,13 +5,13 @@ const services = [
     icon: '📋',
     title: 'Pengaduan Warga',
     description: 'Sampaikan keluhan atau aspirasi Anda',
-    href: '/alur-pengaduan',
+    href: '/alur-pengaduan',  // ← Update
   },
   {
     icon: '📄',
     title: 'Surat Pengantar',
     description: 'Ajukan pembuatan surat keterangan',
-    href: '/denah-kantor',
+    href: '/denah-kantor',  // ← Update
   },
   {
     icon: '📊',

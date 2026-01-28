@@ -1,6 +1,6 @@
 interface VisionMissionProps {
-  vision?: string;
-  mission?: string;
+  vision?: string | null;
+  mission?: string | null;
 }
 
 export default function VisionMissionSection({ vision, mission }: VisionMissionProps) {
@@ -14,7 +14,9 @@ export default function VisionMissionSection({ vision, mission }: VisionMissionP
   ];
 
   const displayVision = vision || defaultVision;
-  const displayMission = mission ? mission.split('\n').filter(Boolean) : defaultMission;
+  const displayMission = mission 
+    ? mission.split('\n').filter(Boolean) 
+    : defaultMission;
 
   return (
     <section className="py-14 bg-white" id="visi-misi">
