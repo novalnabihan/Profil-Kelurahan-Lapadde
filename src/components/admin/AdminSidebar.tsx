@@ -25,7 +25,7 @@ const menuItems = [
   {
     icon: Building2,
     label: 'Data RT/RW',
-    href: '/rt-rw',
+    href: '/rtrw',
   },
   {
     icon: MapPin,
