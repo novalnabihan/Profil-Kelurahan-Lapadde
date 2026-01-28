@@ -10,27 +10,27 @@ const menuItems = [
   {
     icon: LayoutDashboard,
     label: 'Dashboard',
-    href: '/admin/dashboard',
+    href: '/dashboard',
   },
   {
     icon: FileText,
     label: 'Profil Kelurahan',
-    href: '/admin/profil',
+    href: '/profil',
   },
   {
     icon: Users,
     label: 'Struktur Organisasi',
-    href: '/admin/struktur',
+    href: '/struktur',
   },
   {
     icon: Building2,
     label: 'Data RT/RW',
-    href: '/admin/rt-rw',
+    href: '/rt-rw',
   },
   {
     icon: MapPin,
     label: 'Peta & Fasilitas',
-    href: '/admin/peta',
+    href: '/peta',
   },
 ]
 
