@@ -1,137 +1,58 @@
-// src/app/(public)/rt-rw/[rwSlug]/page.tsx
-
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-
 import MainNavbar from '@/components/layout/MainNavbar';
 import MainFooter from '@/components/layout/MainFooter';
-
 import LeafletMapSection from '@/components/map/LeafletMapSection';
-
 import RwLeaderCard from '@/features/rt-rw/ui/RwLeaderCard';
 import RtCard from '@/features/rt-rw/ui/RtCard';
-import { RwWithRts } from '@/features/rt-rw/types';
+import prisma from '@/lib/prisma';
 
-// Opsional: pastikan selalu SSR
 export const dynamic = 'force-dynamic';
 
-// Pre-generate rute (boleh kamu tambah lagi)
+// Fetch RW with RT children
+async function getRwDetailBySlug(slug: string) {
+  // Extract RW number from slug (e.g., "rw-01" -> "01")
+  const rwNumber = slug.replace('rw-', '');
+
+  const rwData = await prisma.rtRw.findFirst({
+    where: {
+      type: 'RW',
+      number: rwNumber,
+    },
+    include: {
+      rtChildren: {
+        orderBy: { order: 'asc' },
+      },
+    },
+  });
+
+  return rwData;
+}
+
+// Generate static params for existing RW
 export async function generateStaticParams() {
-  return [
-    { rwSlug: 'rw-01' },
-    { rwSlug: 'rw-02' },
-    { rwSlug: 'rw-03' },
-  ];
+  const rwList = await prisma.rtRw.findMany({
+    where: { type: 'RW' },
+    select: { number: true },
+  });
+
+  return rwList.map((rw) => ({
+    rwSlug: `rw-${rw.number}`,
+  }));
 }
 
-// ==============================
-// Mock Fetch by slug
-// ==============================
-async function getRwDetailBySlug(slug: string): Promise<RwWithRts | null> {
-  const mockData: Record<string, RwWithRts> = {
-    'rw-01': {
-      id: '1',
-      type: 'RW',
-      number: '01',
-      leader: 'Budi Santoso, S.Sos',
-      phone: '0812-3456-7890',
-      address: 'Jl. Merdeka No. 10, Batam Kota',
-      latitude: 1.1195,
-      longitude: 104.0457,
-      photoUrl: '',
-      order: 1,
-      rtChildren: [
-        {
-          id: 'rt-1',
-          type: 'RT',
-          number: '01',
-          rwParentId: '1',
-          leader: 'Agus Setiawan',
-          phone: '0815-1234-5678',
-          address: 'Jl. Melati No. 5',
-          latitude: 1.1193,
-          longitude: 104.0455,
-          photoUrl: '',
-          order: 1,
-        },
-        {
-          id: 'rt-2',
-          type: 'RT',
-          number: '02',
-          rwParentId: '1',
-          leader: 'Dewi Lestari',
-          phone: '0816-2345-6789',
-          address: 'Jl. Mawar No. 12',
-          latitude: 1.1197,
-          longitude: 104.0459,
-          photoUrl: '',
-          order: 2,
-        },
-        {
-          id: 'rt-3',
-          type: 'RT',
-          number: '03',
-          rwParentId: '1',
-          leader: 'Eko Prasetyo',
-          phone: '0817-3456-7890',
-          address: 'Jl. Anggrek No. 8',
-          latitude: 1.1192,
-          longitude: 104.0462,
-          photoUrl: '',
-          order: 3,
-        },
-      ],
-    },
-
-    'rw-02': {
-      id: '2',
-      type: 'RW',
-      number: '02',
-      leader: 'Siti Aminah, S.Pd',
-      phone: '0813-4567-8901',
-      address: 'Jl. Sudirman No. 25, Batam Kota',
-      latitude: 1.12,
-      longitude: 104.047,
-      photoUrl: '',
-      order: 2,
-      rtChildren: [],
-    },
-
-    'rw-03': {
-      id: '3',
-      type: 'RW',
-      number: '03',
-      leader: 'Andi Wijaya, S.T',
-      phone: '0814-5678-9012',
-      address: 'Jl. Ahmad Yani No. 15, Batam Kota',
-      latitude: 1.1185,
-      longitude: 104.0445,
-      photoUrl: '',
-      order: 3,
-      rtChildren: [],
-    },
-  };
-
-  return mockData[slug] ?? null;
-}
-
-// ==============================
-// Page
-// ==============================
 interface PageProps {
-  params: Promise<{ rwSlug: string }>; // ⬅ params adalah Promise
+  params: Promise<{ rwSlug: string }>;
 }
 
 export default async function RwDetailPage({ params }: PageProps) {
-  // UNWRAP params dulu
   const { rwSlug } = await params;
-  const slug = rwSlug;
 
-  if (!slug) {
+  if (!rwSlug) {
     notFound();
   }
 
-  const rwData = await getRwDetailBySlug(slug);
+  const rwData = await getRwDetailBySlug(rwSlug);
 
   if (!rwData) {
     notFound();
@@ -139,9 +60,7 @@ export default async function RwDetailPage({ params }: PageProps) {
 
   const rtChildren = rwData.rtChildren ?? [];
 
-  // ==============================
   // Map Markers
-  // ==============================
   const mapMarkers = [
     ...(rwData.latitude && rwData.longitude
       ? [
@@ -231,7 +150,7 @@ export default async function RwDetailPage({ params }: PageProps) {
         </section>
 
         {/* RT List */}
-        {rtChildren.length > 0 && (
+        {rtChildren.length > 0 ? (
           <section className="py-10">
             <div className="max-w-[1140px] mx-auto px-6">
               <h2 className="text-[20px] font-semibold text-[#1a202c] mb-6">
@@ -245,6 +164,14 @@ export default async function RwDetailPage({ params }: PageProps) {
                     rwNumber={rwData.number}
                   />
                 ))}
+              </div>
+            </div>
+          </section>
+        ) : (
+          <section className="py-10">
+            <div className="max-w-[1140px] mx-auto px-6">
+              <div className="text-center py-12 bg-white rounded-lg border border-[#e2e8f0]">
+                <p className="text-[#718096]">Belum ada data RT di RW ini</p>
               </div>
             </div>
           </section>
