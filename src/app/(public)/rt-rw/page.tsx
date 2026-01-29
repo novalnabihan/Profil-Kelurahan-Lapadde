@@ -1,51 +1,16 @@
-// src/app/(public)/rt-rw/page.tsx
-
 import MainNavbar from '@/components/layout/MainNavbar';
 import MainFooter from '@/components/layout/MainFooter';
 import RwCard from '@/features/rt-rw/ui/RwCard';
-import { RtRwData } from '@/features/rt-rw/types';
 import LeafletMap from '@/components/map/LeafletMap';
+import prisma from '@/lib/prisma';
 
-// TODO: Fetch from API / Prisma
-async function getRwData(): Promise<RtRwData[]> {
-  return [
-    {
-      id: '1',
-      type: 'RW',
-      number: '01',
-      leader: 'Budi Santoso, S.Sos',
-      phone: '0812-3456-7890',
-      address: 'Jl. Merdeka No. 10, Batam Kota',
-      latitude: 1.1195,
-      longitude: 104.0457,
-      photoUrl: '',
-      order: 1,
-    },
-    {
-      id: '2',
-      type: 'RW',
-      number: '02',
-      leader: 'Siti Aminah, S.Pd',
-      phone: '0813-4567-8901',
-      address: 'Jl. Sudirman No. 25, Batam Kota',
-      latitude: 1.12,
-      longitude: 104.047,
-      photoUrl: '',
-      order: 2,
-    },
-    {
-      id: '3',
-      type: 'RW',
-      number: '03',
-      leader: 'Andi Wijaya, S.T',
-      phone: '0814-5678-9012',
-      address: 'Jl. Ahmad Yani No. 15, Batam Kota',
-      latitude: 1.1185,
-      longitude: 104.0445,
-      photoUrl: '',
-      order: 3,
-    },
-  ];
+async function getRwData() {
+  const rwData = await prisma.rtRw.findMany({
+    where: { type: 'RW' },
+    orderBy: { order: 'asc' },
+  });
+
+  return rwData;
 }
 
 export default async function RtRwPage() {
@@ -101,11 +66,17 @@ export default async function RtRwPage() {
               Daftar RW
             </h2>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {rwData.map((rw) => (
-                <RwCard key={rw.id} data={rw} />
-              ))}
-            </div>
+            {rwData.length > 0 ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {rwData.map((rw) => (
+                  <RwCard key={rw.id} data={rw} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 bg-white rounded-lg border border-[#e2e8f0]">
+                <p className="text-[#718096]">Belum ada data RW</p>
+              </div>
+            )}
           </div>
         </section>
       </main>
