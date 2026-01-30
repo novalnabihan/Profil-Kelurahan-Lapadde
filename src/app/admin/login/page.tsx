@@ -10,7 +10,7 @@ export default async function AdminLoginPage() {
 
   // If already logged in, redirect to dashboard
   if (user) {
-    redirect('/admin/dashboard')
+    redirect('/dashboard')
   }
 
   return (

@@ -1,3 +1,5 @@
+//src/features/peta/ui/FacilityStats.tsx
+
 import { Facility, FacilityCategory } from '../types';
 import { FACILITY_ICONS, FACILITY_LABELS } from '../utils/facility-icons';
 

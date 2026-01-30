@@ -1,3 +1,5 @@
+//src/features/peta/ui/CategoryFilter.tsx
+
 'use client';
 
 import { FacilityCategory } from '../types';

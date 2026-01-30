@@ -1,3 +1,5 @@
+//src/features/peta/ui/BoundaryInfoBox.tsx
+
 import { BoundaryInfo } from '../types';
 
 interface BoundaryInfoBoxProps {

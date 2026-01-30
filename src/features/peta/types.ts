@@ -1,3 +1,5 @@
+//src/features/peta/types.ts
+
 export interface Facility {
   id: string;
   name: string;

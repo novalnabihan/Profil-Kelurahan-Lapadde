@@ -1,3 +1,5 @@
+//app/%28public%29/peta-lapadde/page.tsx
+
 'use client';
 
 import { useState } from 'react';
@@ -10,6 +12,7 @@ import CategoryFilter from '@/features/peta/ui/CategoryFilter';
 import boundaryData from '@/features/peta/data/boundary.json';
 import { Facility, FacilityCategory } from '@/features/peta/types';
 import { FACILITY_ICONS } from '@/features/peta/utils/facility-icons';
+import MapWithBoundaryMask from '@/components/map/MapWithBoundaryMask';
 
 const MapWithBoundary = dynamic(
   () => import('@/components/map/MapWithBoundary'),
@@ -183,7 +186,7 @@ export default function PetaLapaddePage() {
         {/* Map */}
         <section className="py-10">
           <div className="max-w-[1140px] mx-auto px-6">
-            <MapWithBoundary
+            <MapWithBoundaryMask
               markers={markers}
               boundaryGeoJSON={boundaryData}
               height="600px"

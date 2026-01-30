@@ -1,3 +1,5 @@
+//src/features/peta/ui/PetaSimpleSection.tsx
+
 'use client';
 
 import dynamic from 'next/dynamic';
@@ -50,7 +52,7 @@ export default function PetaSimpleSection() {
             markers={markers}
             boundaryGeoJSON={boundaryData}
             height="400px"
-            zoom={14}
+            zoom={15}
           />
         </div>
 

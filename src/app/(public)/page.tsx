@@ -1,3 +1,5 @@
+//app/%28public%29/page.tsx
+
 import MainNavbar from '@/components/layout/MainNavbar';
 import MainFooter from '@/components/layout/MainFooter';
 import HeroSection from '@/features/site/ui/HeroSection';
