@@ -7,7 +7,6 @@ import ServicesSection from '@/features/site/ui/ServicesSection';
 import VisionMissionSection from '@/features/site/ui/VisionMissionSection';
 import StrukturSection from '@/features/struktur/ui/StrukturSection';
 import EventsPreviewSection from '@/features/events/ui/EventsPreviewSection';
-import ContactSection from '@/features/site/ui/ContactSection';
 import PetaSimpleSection from '@/features/peta/ui/PetaSimpleSection';
 import prisma from '@/lib/prisma';
 
@@ -66,7 +65,6 @@ export default async function HomePage() {
         {data.events.length > 0 && (
           <EventsPreviewSection events={data.events} />
         )}
-        <ContactSection />
       </main>
       <MainFooter />
     </>
