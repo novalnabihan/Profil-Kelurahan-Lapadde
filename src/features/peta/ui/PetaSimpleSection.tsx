@@ -1,5 +1,4 @@
-//src/features/peta/ui/PetaSimpleSection.tsx
-
+// src/features/peta/ui/PetaSimpleSection.tsx
 'use client';
 
 import dynamic from 'next/dynamic';
@@ -29,13 +28,14 @@ const boundaryInfo: BoundaryInfo = {
 };
 
 export default function PetaSimpleSection() {
-  // Only show kantor kelurahan marker
+  // Marker tunggal: Kantor Kelurahan
   const markers = [
     {
-      id: 'kantor',
-      lat: 1.1195,
-      lng: 104.0460,
+      id: 'kantor-lapadde',
+      lat: -3.9857,      // TODO: pakai koordinat kantor real
+      lng: 119.6693,
       title: 'Kantor Kelurahan Lapadde',
+      subtitle: 'Lokasi kantor lurah',
       icon: '🏛️',
     },
   ];
@@ -52,13 +52,13 @@ export default function PetaSimpleSection() {
             markers={markers}
             boundaryGeoJSON={boundaryData}
             height="400px"
-            zoom={15}
+            zoom={14}
           />
         </div>
 
         <div className="grid md:grid-cols-[1fr_auto] gap-6 items-start">
           <BoundaryInfoBox info={boundaryInfo} />
-          
+
           <Link
             href="/peta-lapadde"
             className="bg-[#8b9474] text-white px-6 py-3 rounded-lg font-medium text-[14px] hover:bg-[#6d7558] transition-colors whitespace-nowrap flex items-center gap-2 justify-center md:self-end"
