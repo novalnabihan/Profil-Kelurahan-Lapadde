@@ -33,7 +33,11 @@ export default function MainNavbar() {
   };
 
   return (
-    <header className={`sticky top-0 z-50 bg-white transition-shadow ${isScrolled ? 'shadow-sm' : ''}`}>
+<header
+  className={`sticky top-0 z-[2000] bg-white ${
+    isScrolled ? 'shadow-sm' : 'shadow-none'
+  } transition-shadow`}
+>
       <div className="bg-[#8b9474] py-2">
         <div className="max-w-[1140px] mx-auto px-6">
           <p className="text-white text-[13px]">Selamat datang di website resmi Kelurahan Lapadde</p>
