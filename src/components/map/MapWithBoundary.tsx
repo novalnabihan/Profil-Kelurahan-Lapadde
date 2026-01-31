@@ -1,11 +1,11 @@
-
-//src/components/map/MapWithBoundary.tsx
+// src/components/map/MapWithBoundary.tsx
 'use client';
 
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '@/lib/leaflet-config';
+import { getGeoJsonCenter } from './geojson-utils';
 
 interface MapMarker {
   id: string;
@@ -13,7 +13,10 @@ interface MapMarker {
   lng: number;
   title: string;
   subtitle?: string;
-  type: 'RW' | 'RT';
+  // Optional: untuk peta RT/RW
+  type?: 'RW' | 'RT';
+  // Optional: override icon (emoji) misalnya untuk kantor kelurahan
+  icon?: string;
 }
 
 interface MapWithBoundaryProps {
@@ -29,7 +32,7 @@ export default function MapWithBoundary({
   markers,
   boundaryGeoJSON,
   center,
-  zoom = 15,
+  zoom = 14,
   height = '450px',
   onMarkerClick,
 }: MapWithBoundaryProps) {
@@ -37,74 +40,68 @@ export default function MapWithBoundary({
   const markerLayerRef = useRef<L.LayerGroup | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
-  const calculateCenter = (markers: MapMarker[]): [number, number] => {
-    if (markers.length === 0) {
-      // Calculate from boundary if no markers
-      if (boundaryGeoJSON?.features?.[0]?.geometry?.coordinates) {
-        const coords = boundaryGeoJSON.features[0].geometry.coordinates;
-        // Handle MultiPolygon
-        let allCoords: number[][] = [];
-        
-        if (boundaryGeoJSON.features[0].geometry.type === 'MultiPolygon') {
-          // MultiPolygon has one more level of nesting
-          coords[0][0].forEach((coord: number[]) => {
-            allCoords.push(coord);
-          });
-        } else {
-          // Regular Polygon
-          coords[0].forEach((coord: number[]) => {
-            allCoords.push(coord);
-          });
-        }
-
-        const lats = allCoords.map(c => c[1]); // latitude is second
-        const lngs = allCoords.map(c => c[0]); // longitude is first
-        const avgLat = lats.reduce((a, b) => a + b, 0) / lats.length;
-        const avgLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
-        
-        return [avgLat, avgLng];
-      }
-      return [-3.9857, 119.6693]; // Default center Lapadde
+  const calculateCenterFromMarkers = (
+    points: MapMarker[]
+  ): [number, number] => {
+    if (!points.length) {
+      return [-3.9857, 119.6693]; // fallback Lapadde
     }
-
-    const avgLat = markers.reduce((sum, m) => sum + m.lat, 0) / markers.length;
-    const avgLng = markers.reduce((sum, m) => sum + m.lng, 0) / markers.length;
-
-    return [avgLat, avgLng];
+    const lat =
+      points.reduce((s, m) => s + m.lat, 0) / points.length;
+    const lng =
+      points.reduce((s, m) => s + m.lng, 0) / points.length;
+    return [lat, lng];
   };
 
   // INIT MAP
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    const mapCenter = center || calculateCenter(markers);
+    // urutan preferensi center:
+    // 1) props.center
+    // 2) rata-rata marker
+    // 3) center GeoJSON
+    // 4) fallback default
+    const geoCenter = getGeoJsonCenter(boundaryGeoJSON);
+    const mapCenter =
+      center ??
+      (markers.length
+        ? calculateCenterFromMarkers(markers)
+        : geoCenter ?? [-3.9857, 119.6693]);
 
-    const map = L.map(mapContainerRef.current).setView(mapCenter, zoom);
+    const map = L.map(mapContainerRef.current).setView(
+      mapCenter,
+      zoom
+    );
     mapRef.current = map;
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
-    }).addTo(map);
+    L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        attribution: '© OpenStreetMap contributors',
+      }
+    ).addTo(map);
 
     markerLayerRef.current = L.layerGroup().addTo(map);
 
-    // Add boundary with proper coordinate handling
+    // Boundary: highlight area Lapadde (tanpa mask)
     if (boundaryGeoJSON) {
       const boundaryLayer = L.geoJSON(boundaryGeoJSON, {
         style: {
           color: '#8b9474',
-          weight: 6,
-          opacity: 0.8,
-          fillColor: '#800080',
-          fillOpacity: 0.1,
+          weight: 2,
+          opacity: 0.9,
+          fillColor: '#8b9474',
+          fillOpacity: 0.08,
         },
-        // Leaflet automatically handles coordinate conversion for GeoJSON
       }).addTo(map);
 
-      // Fit map to boundary
       const bounds = boundaryLayer.getBounds();
       if (bounds.isValid()) {
-        map.fitBounds(bounds, { padding: [50, 50] });
+        map.fitBounds(bounds, {
+          padding: [120, 120],
+          maxZoom: zoom, // misalnya 14
+        });
       }
     }
 
@@ -112,6 +109,7 @@ export default function MapWithBoundary({
       map.remove();
       mapRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boundaryGeoJSON, zoom]);
 
   // UPDATE MARKERS
@@ -121,16 +119,25 @@ export default function MapWithBoundary({
     markerLayerRef.current.clearLayers();
 
     markers.forEach((marker) => {
+      const iconEmoji =
+        marker.icon ??
+        (marker.type === 'RW'
+          ? '🏛️'
+          : marker.type === 'RT'
+          ? '🏘️'
+          : '📍');
+
       const icon = L.divIcon({
-        html: `<div style="font-size:24px">${
-          marker.type === 'RW' ? '🏛️' : '🏘️'
-        }</div>`,
+        html: `<div style="font-size:24px">${iconEmoji}</div>`,
         className: '',
         iconSize: [30, 30],
         iconAnchor: [15, 30],
       });
 
-      const leafletMarker = L.marker([marker.lat, marker.lng], { icon }).bindPopup(
+      const leafletMarker = L.marker(
+        [marker.lat, marker.lng],
+        { icon }
+      ).bindPopup(
         `
         <div style="text-align:center;padding:6px">
           <strong>${marker.title}</strong><br/>
@@ -156,13 +163,4 @@ export default function MapWithBoundary({
       className="rounded-lg border border-[#e2e8f0]"
     />
   );
-}
-
-function calculateCenter(markers: MapMarker[]): [number, number] {
-  if (markers.length === 0) return [-3.9857, 119.6693];
-
-  const lat = markers.reduce((s, m) => s + m.lat, 0) / markers.length;
-  const lng = markers.reduce((s, m) => s + m.lng, 0) / markers.length;
-
-  return [lat, lng];
 }
