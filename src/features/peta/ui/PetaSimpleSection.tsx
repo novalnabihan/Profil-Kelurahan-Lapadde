@@ -32,8 +32,8 @@ export default function PetaSimpleSection() {
   const markers = [
     {
       id: 'kantor-lapadde',
-      lat: -3.9857,      // TODO: pakai koordinat kantor real
-      lng: 119.6693,
+      lat: -3.9946681101589094,      // TODO: pakai koordinat kantor real
+      lng: 119.65056736411529,
       title: 'Kantor Kelurahan Lapadde',
       subtitle: 'Lokasi kantor lurah',
       icon: '🏛️',
@@ -41,7 +41,7 @@ export default function PetaSimpleSection() {
   ];
 
   return (
-    <section className="py-14 bg-white" id="peta">
+    <section className="py-14 bg-white scroll-mt-[120px]" id="peta">
       <div className="max-w-[1140px] mx-auto px-6">
         <h2 className="text-[22px] font-semibold text-[#1a202c] mb-8">
           Peta Wilayah Kelurahan
@@ -57,7 +57,7 @@ export default function PetaSimpleSection() {
         </div>
 
         <div className="grid md:grid-cols-[1fr_auto] gap-6 items-start">
-          <BoundaryInfoBox info={boundaryInfo} />
+          {/* <BoundaryInfoBox info={boundaryInfo} /> */}
 
           <Link
             href="/peta-lapadde"

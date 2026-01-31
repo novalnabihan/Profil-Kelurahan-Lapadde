@@ -19,7 +19,7 @@ export default function VisionMissionSection({ vision, mission }: VisionMissionP
     : defaultMission;
 
   return (
-    <section className="py-14 bg-white" id="visi-misi">
+    <section className="py-14 bg-white scroll-mt-[120px]" id="visi-misi">
       <div className="max-w-[1140px] mx-auto px-6">
         <h2 className="text-[22px] font-semibold text-[#1a202c] mb-8">Visi & Misi Kelurahan</h2>
         

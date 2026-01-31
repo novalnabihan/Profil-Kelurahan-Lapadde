@@ -1,3 +1,5 @@
+// src/features/site/ui/contactsection
+
 const contacts = [
   {
     icon: '📍',

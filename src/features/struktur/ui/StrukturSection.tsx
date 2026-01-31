@@ -17,7 +17,7 @@ export default function StrukturSection({ members }: StrukturSectionProps) {
   const staff = members.filter(m => m.order > 0).sort((a, b) => a.order - b.order);
 
   return (
-    <section className="py-14 bg-[#f8f9fa]" id="struktur">
+    <section className="py-14 bg-[#f8f9fa] scroll-mt-[120px]" id="struktur">
       <div className="max-w-[1140px] mx-auto px-6">
         <h2 className="text-[22px] font-semibold text-[#1a202c] mb-8">Struktur Organisasi</h2>
         
