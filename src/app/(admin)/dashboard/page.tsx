@@ -30,7 +30,7 @@ export default async function DashboardPage() {
       <div>
         <h1 className="text-2xl font-bold text-[#1a202c] mb-2">Dashboard</h1>
         <p className="text-[#718096]">
-          Selamat datang di panel admin Kelurahan Lapadde
+          Selamat datang di panel admin Kelurahan Lapadde!
         </p>
       </div>
 
