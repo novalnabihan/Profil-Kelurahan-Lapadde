@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState, MouseEvent } from 'react';
+import { ShieldCheck } from 'lucide-react';
 
 type NavLink = {
   href: string;
@@ -83,13 +84,13 @@ export default function MainNavbar() {
       } transition-shadow`}
     >
       {/* Top bar hijau */}
-      <div className="bg-[#8b9474] py-2">
+      {/* <div className="bg-[#8b9474] py-2">
         <div className="max-w-[1140px] mx-auto px-6">
           <p className="text-white text-[13px]">
             Selamat datang di website resmi Kelurahan Lapadde
           </p>
         </div>
-      </div>
+      </div> */}
 
       {/* Brand row */}
       <div className="max-w-[1140px] mx-auto px-6 py-4">
@@ -107,30 +108,55 @@ export default function MainNavbar() {
       </div>
 
       {/* Nav links */}
-      <nav className="border-t border-[#e8ecf1] overflow-x-auto">
-        <ul className="flex max-w-[1140px] mx-auto px-6">
-          {navLinks.map((link) => {
-            const active = isActive(link);
-            return (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  onClick={(e) => handleAnchorClick(e, link)}
-                  className={`block px-[18px] py-[14px] text-[14px] font-medium whitespace-nowrap border-b-2 transition-colors ${
-                    active
-                      ? 'text-[#8b9474] border-[#8b9474]'
-                      : link.type === 'page'
-                      ? 'text-[#718096] border-transparent hover:text-[#8b9474] hover:border-[#d4d9c6]'
-                      : 'text-[#4a5568] border-transparent hover:text-[#8b9474] hover:border-[#d4d9c6]'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+<nav className="border-t border-[#e8ecf1]">
+  <div className="max-w-[1140px] mx-auto px-6 flex items-center justify-between">
+    
+    {/* LEFT: NAV LINKS */}
+    <ul className="flex overflow-x-auto">
+      {navLinks.map((link) => {
+        const active = isActive(link);
+        return (
+          <li key={link.href}>
+            <Link
+              href={link.href}
+              onClick={(e) => handleAnchorClick(e, link)}
+              className={`block px-[18px] py-[14px] text-[14px] font-medium whitespace-nowrap border-b-2 transition-colors ${
+                active
+                  ? 'text-[#8b9474] border-[#8b9474]'
+                  : link.type === 'page'
+                  ? 'text-[#718096] border-transparent hover:text-[#8b9474] hover:border-[#d4d9c6]'
+                  : 'text-[#4a5568] border-transparent hover:text-[#8b9474] hover:border-[#d4d9c6]'
+              }`}
+            >
+              {link.label}
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+
+    {/* RIGHT: ADMIN LOGIN */}
+    <Link
+      href="/admin/login"
+      className="
+        ml-4
+        flex items-center gap-2
+        text-[13px] font-medium
+        text-[#4a5568]
+        hover:text-[#8b9474]
+        transition-colors
+        px-3 py-2
+        rounded
+        hover:bg-[#f8f9fa]
+      "
+    >
+      <ShieldCheck size={16} />
+      <span className="hidden sm:inline">Admin</span>
+    </Link>
+
+  </div>
+</nav>
+
     </header>
   );
 }
