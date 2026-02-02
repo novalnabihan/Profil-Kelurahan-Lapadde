@@ -2,7 +2,11 @@ import LoginForm from '@/features/auth/ui/LoginForm'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
-export default async function AdminLoginPage() {
+interface AdminLoginPageProps {
+  searchParams?: { [key: string]: string | string[] | undefined }
+}
+
+export default async function AdminLoginPage({ searchParams }: AdminLoginPageProps) {
   const supabase = await createServerSupabaseClient()
   const {
     data: { user },
@@ -12,6 +16,11 @@ export default async function AdminLoginPage() {
   if (user) {
     redirect('/dashboard')
   }
+
+  // Baca reason dari query (?reason=session_expired)
+  const reasonParam = searchParams?.reason
+  const reason = Array.isArray(reasonParam) ? reasonParam[0] : reasonParam
+  const showSessionExpired = reason === 'session_expired'
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#8b9474] to-[#6d7558] flex items-center justify-center p-4">
@@ -25,6 +34,13 @@ export default async function AdminLoginPage() {
             <h1 className="text-2xl font-bold text-[#1a202c] mb-2">Admin Panel</h1>
             <p className="text-[#718096] text-sm">Kelurahan Lapadde</p>
           </div>
+
+          {/* Alert session expired (opsional) */}
+          {showSessionExpired && (
+            <div className="mb-4 rounded-md bg-yellow-50 border border-yellow-200 px-4 py-3 text-[13px] text-[#744210]">
+              Sesi admin Anda telah berakhir. Silakan login kembali.
+            </div>
+          )}
 
           {/* Login Form */}
           <LoginForm />
