@@ -1,10 +1,10 @@
 // src/features/rt-rw/ui/RwLeaderCard.tsx
-
 'use client';
 
 import Image from 'next/image';
 import { RtRwData } from '../types';
 import DirectionButton from './DirectionButton';
+import { openWhatsApp } from '../utils/phone';
 
 interface RwLeaderCardProps {
   data: RtRwData;
@@ -15,6 +15,11 @@ export default function RwLeaderCard({ data }: RwLeaderCardProps) {
     if (data.phone) {
       window.location.href = `tel:${data.phone}`;
     }
+  };
+
+  const handleWhatsApp = () => {
+    if (!data.phone) return;
+    openWhatsApp(data.phone);
   };
 
   return (
@@ -43,16 +48,29 @@ export default function RwLeaderCard({ data }: RwLeaderCardProps) {
             )}
           </div>
           <div className="flex-1">
-            <h4 className="text-[18px] font-semibold text-[#1a202c] mb-3">{data.leader}</h4>
+            <h4 className="text-[18px] font-semibold text-[#1a202c] mb-3">
+              {data.leader}
+            </h4>
+
             {data.phone && (
-              <button
-                onClick={handleCall}
-                className="flex items-center gap-2 text-[15px] text-[#8b9474] hover:text-[#6d7558] transition-colors mb-2"
-              >
-                <span>📞</span>
-                <span className="font-medium">{data.phone}</span>
-              </button>
+              <div className="flex flex-col gap-1 mb-2">
+                <button
+                  onClick={handleCall}
+                  className="flex items-center gap-2 text-[15px] text-[#8b9474] hover:text-[#6d7558] transition-colors"
+                >
+                  <span>📞</span>
+                  <span className="font-medium">{data.phone}</span>
+                </button>
+                <button
+                  onClick={handleWhatsApp}
+                  className="inline-flex items-center gap-2 text-[14px] text-[#128C7E] hover:text-[#075E54] transition-colors"
+                >
+                  <span>💬</span>
+                  <span>WhatsApp</span>
+                </button>
+              </div>
             )}
+
             {data.address && (
               <div className="flex items-start gap-2 text-[14px] text-[#4a5568]">
                 <span>📍</span>

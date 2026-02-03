@@ -1,51 +1,33 @@
+// src/features/rt-rw/ui/RtRwMap.tsx
 'use client';
 
-import { useEffect, useRef } from 'react';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import '@/lib/leaflet-config';
-
-import type { RtRw } from '@/generated/prisma';
+import MapWithBoundaryMask from '@/components/map/MapWithBoundaryMask';
+import { KELURAHAN_BOUNDARY } from '@/features/rt-rw/data/rw-boundaries';
+import type { RtRw } from '@/generated/prisma/';
 
 interface Props {
   rwList: RtRw[];
 }
 
 export default function RtRwMap({ rwList }: Props) {
-  const mapRef = useRef<L.Map | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!containerRef.current || mapRef.current) return;
-
-    const map = L.map(containerRef.current).setView(
-      [-3.9857, 119.6693],
-      14
-    );
-
-    mapRef.current = map;
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
-    }).addTo(map);
-
-    rwList.forEach((rw) => {
-      if (!rw.latitude || !rw.longitude) return;
-
-      L.marker([rw.latitude, rw.longitude]).addTo(map)
-        .bindPopup(`<strong>RW ${rw.number}</strong><br/>${rw.leader}`);
-    });
-
-    return () => {
-      map.remove();
-      mapRef.current = null;
-    };
-  }, [rwList]);
+  // Ambil RW yang punya koordinat
+  const markers = rwList
+    .filter((rw) => rw.latitude && rw.longitude)
+    .map((rw) => ({
+      id: rw.id,
+      lat: rw.latitude as number,
+      lng: rw.longitude as number,
+      title: `RW ${rw.number}`,
+      icon: '🏛️',
+    }));
 
   return (
-    <div
-      ref={containerRef}
-      className="h-[450px] rounded-lg border border-[#e2e8f0]"
+    <MapWithBoundaryMask
+      markers={markers}
+      boundaryGeoJSON={KELURAHAN_BOUNDARY}
+      zoom={15}
+      height="450px"
+      showControls={true}
     />
   );
 }

@@ -1,10 +1,10 @@
 // src/features/rt-rw/ui/RtCard.tsx
-
 'use client';
 
 import Image from 'next/image';
 import { RtRwData } from '../types';
 import DirectionButton from './DirectionButton';
+import { openWhatsApp } from '../utils/phone';
 
 interface RtCardProps {
   data: RtRwData;
@@ -16,6 +16,11 @@ export default function RtCard({ data, rwNumber }: RtCardProps) {
     if (data.phone) {
       window.location.href = `tel:${data.phone}`;
     }
+  };
+
+  const handleWhatsApp = () => {
+    if (!data.phone) return;
+    openWhatsApp(data.phone);
   };
 
   return (
@@ -53,14 +58,24 @@ export default function RtCard({ data, rwNumber }: RtCardProps) {
             <h4 className="text-[15px] font-semibold text-[#1a202c] mb-2 truncate">
               {data.leader}
             </h4>
+
             {data.phone && (
-              <button
-                onClick={handleCall}
-                className="flex items-center gap-1.5 text-[13px] text-[#8b9474] hover:text-[#6d7558] transition-colors"
-              >
-                <span>📞</span>
-                <span className="font-medium">{data.phone}</span>
-              </button>
+              <div className="flex flex-col gap-1">
+                <button
+                  onClick={handleCall}
+                  className="flex items-center gap-1.5 text-[13px] text-[#8b9474] hover:text-[#6d7558] transition-colors"
+                >
+                  <span>📞</span>
+                  <span className="font-medium">{data.phone}</span>
+                </button>
+                <button
+                  onClick={handleWhatsApp}
+                  className="inline-flex items-center gap-1.5 text-[13px] text-[#128C7E] hover:text-[#075E54] transition-colors"
+                >
+                  <span>💬</span>
+                  <span>WhatsApp</span>
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -69,7 +84,9 @@ export default function RtCard({ data, rwNumber }: RtCardProps) {
         {data.address && (
           <div className="mb-4 pb-4 border-b border-[#e2e8f0]">
             <p className="text-[13px] text-[#718096] mb-1">Alamat</p>
-            <p className="text-[13px] text-[#4a5568] leading-relaxed">{data.address}</p>
+            <p className="text-[13px] text-[#4a5568] leading-relaxed">
+              {data.address}
+            </p>
           </div>
         )}
 

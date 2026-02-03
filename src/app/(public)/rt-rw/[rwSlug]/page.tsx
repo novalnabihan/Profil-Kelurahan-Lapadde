@@ -1,18 +1,20 @@
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import MainNavbar from '@/components/layout/MainNavbar';
-import MainFooter from '@/components/layout/MainFooter';
-import LeafletMapSection from '@/components/map/LeafletMapSection';
-import RwLeaderCard from '@/features/rt-rw/ui/RwLeaderCard';
-import RtCard from '@/features/rt-rw/ui/RtCard';
-import prisma from '@/lib/prisma';
+// src/app/(public)/rt-rw/[rwSlug]/page.tsx
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import MainNavbar from '@/components/layout/MainNavbar'
+import MainFooter from '@/components/layout/MainFooter'
+import RwLeaderCard from '@/features/rt-rw/ui/RwLeaderCard'
+import RtCard from '@/features/rt-rw/ui/RtCard'
+import RwDetailMap from '@/features/rt-rw/ui/RwDetailMap'
+import prisma from '@/lib/prisma'
+import boundaryData from '@/features/peta/data/boundary.json'
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
 
 // Fetch RW with RT children
 async function getRwDetailBySlug(slug: string) {
   // Extract RW number from slug (e.g., "rw-01" -> "01")
-  const rwNumber = slug.replace('rw-', '');
+  const rwNumber = slug.replace('rw-', '')
 
   const rwData = await prisma.rtRw.findFirst({
     where: {
@@ -24,9 +26,9 @@ async function getRwDetailBySlug(slug: string) {
         orderBy: { order: 'asc' },
       },
     },
-  });
+  })
 
-  return rwData;
+  return rwData
 }
 
 // Generate static params for existing RW
@@ -34,33 +36,33 @@ export async function generateStaticParams() {
   const rwList = await prisma.rtRw.findMany({
     where: { type: 'RW' },
     select: { number: true },
-  });
+  })
 
   return rwList.map((rw) => ({
     rwSlug: `rw-${rw.number}`,
-  }));
+  }))
 }
 
 interface PageProps {
-  params: Promise<{ rwSlug: string }>;
+  params: Promise<{ rwSlug: string }>
 }
 
 export default async function RwDetailPage({ params }: PageProps) {
-  const { rwSlug } = await params;
+  const { rwSlug } = await params
 
   if (!rwSlug) {
-    notFound();
+    notFound()
   }
 
-  const rwData = await getRwDetailBySlug(rwSlug);
+  const rwData = await getRwDetailBySlug(rwSlug)
 
   if (!rwData) {
-    notFound();
+    notFound()
   }
 
-  const rtChildren = rwData.rtChildren ?? [];
+  const rtChildren = rwData.rtChildren ?? []
 
-  // Map Markers
+  // Map markers (RW + RT yang punya koordinat)
   const mapMarkers = [
     ...(rwData.latitude && rwData.longitude
       ? [
@@ -84,7 +86,7 @@ export default async function RwDetailPage({ params }: PageProps) {
         subtitle: rt.leader,
         type: 'RT' as const,
       })),
-  ];
+  ]
 
   return (
     <>
@@ -103,9 +105,7 @@ export default async function RwDetailPage({ params }: PageProps) {
                 RT/RW
               </Link>
               <span className="text-[#cbd5e0]">/</span>
-              <span className="text-[#4a5568] font-medium">
-                RW {rwData.number}
-              </span>
+              <span className="text-[#4a5568] font-medium">RW {rwData.number}</span>
             </nav>
           </div>
         </section>
@@ -126,14 +126,10 @@ export default async function RwDetailPage({ params }: PageProps) {
         <section className="py-10">
           <div className="max-w-[1140px] mx-auto px-6">
             <h2 className="text-[20px] font-semibold text-[#1a202c] mb-4">
-              Peta Lokasi RW {rwData.number} & RT
+              Peta Lokasi RW {rwData.number} &amp; RT
             </h2>
 
-            <LeafletMapSection
-              markers={mapMarkers}
-              zoom={15}
-              height="450px"
-            />
+            <RwDetailMap markers={mapMarkers} boundaryGeoJSON={boundaryData} />
           </div>
         </section>
 
@@ -144,7 +140,8 @@ export default async function RwDetailPage({ params }: PageProps) {
               Ketua RW
             </h2>
             <div className="max-w-2xl">
-              <RwLeaderCard data={rwData} />
+              {/* rwData sudah bentuk Prisma, tapi struct-nya sama dengan RtRwData */}
+              <RwLeaderCard data={rwData as any} />
             </div>
           </div>
         </section>
@@ -158,11 +155,7 @@ export default async function RwDetailPage({ params }: PageProps) {
               </h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {rtChildren.map((rt) => (
-                  <RtCard
-                    key={rt.id}
-                    data={rt}
-                    rwNumber={rwData.number}
-                  />
+                  <RtCard key={rt.id} data={rt as any} rwNumber={rwData.number} />
                 ))}
               </div>
             </div>
@@ -180,5 +173,5 @@ export default async function RwDetailPage({ params }: PageProps) {
 
       <MainFooter />
     </>
-  );
+  )
 }
