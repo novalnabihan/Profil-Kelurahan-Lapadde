@@ -46,9 +46,10 @@ export default function MainNavbar() {
     { href: '/#beranda', label: 'Beranda', type: 'anchor', anchorId: 'beranda' },
     { href: '/#visi-misi', label: 'Visi & Misi', type: 'anchor', anchorId: 'visi-misi' },
     { href: '/#struktur', label: 'Struktur', type: 'anchor', anchorId: 'struktur' },
-    { href: '/#peta', label: 'Peta', type: 'anchor', anchorId: 'peta' },
+    { href: '/#peta', label: 'Peta', type: 'anchor', anchorId: 'peta' },    
+    { href: '/#denah-kantor', label: 'Denah', type: 'anchor', anchorId: 'denah' },
+    { href: '/#alur-pengaduan', label: 'Alur Pengaduan', type: 'anchor', anchorId: 'alur-pengaduan' },
     { href: '/rt-rw', label: 'RT/RW', type: 'page' },
-    { href: '/tentang', label: 'Tentang', type: 'page' },
   ];
 
   const handleAnchorClick = (e: MouseEvent<HTMLAnchorElement>, link: NavLink) => {

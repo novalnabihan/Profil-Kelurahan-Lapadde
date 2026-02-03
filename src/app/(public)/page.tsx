@@ -3,11 +3,12 @@
 import MainNavbar from '@/components/layout/MainNavbar';
 import MainFooter from '@/components/layout/MainFooter';
 import HeroSection from '@/features/site/ui/HeroSection';
-import ServicesSection from '@/features/site/ui/ServicesSection';
 import VisionMissionSection from '@/features/site/ui/VisionMissionSection';
 import StrukturSection from '@/features/struktur/ui/StrukturSection';
 import EventsPreviewSection from '@/features/events/ui/EventsPreviewSection';
 import PetaSimpleSection from '@/features/peta/ui/PetaSimpleSection';
+import AlurPengaduanSection from '@/features/alur-pengaduan/ui/AlurPengaduanSection';
+import DenahKantorSection from '@/features/denah-kantor/ui/DenahKantorSection';
 import prisma from '@/lib/prisma';
 
 async function getHomeData() {
@@ -55,16 +56,17 @@ export default async function HomePage() {
           familyCount: 1245,
           area: '3.2 km²',
         }} />
-        <ServicesSection />
+        {/* <ServicesSection /> */}
         <VisionMissionSection
           vision={data.profile?.vision}
           mission={data.profile?.mission}
         />
         <StrukturSection members={data.struktur} />
         <PetaSimpleSection />
-        {data.events.length > 0 && (
+      <AlurPengaduanSection/>
+        {/* {data.events.length > 0 && (
           <EventsPreviewSection events={data.events} />
-        )}
+        )} */}
       </main>
       <MainFooter />
     </>
