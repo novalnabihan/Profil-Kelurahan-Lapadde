@@ -1,146 +1,92 @@
 // src/features/struktur/utils.ts
-import type { OrgPerson } from './types'
-import type { OrgUnit, RoleCategory } from '@/generated/prisma'
 
-type KasiBlock = {
-  key: string
-  label: string
-  head?: OrgPerson
-  staff: OrgPerson[]
-}
-
-type PendukungBlock = {
-  label: string
-  person: OrgPerson
-}
-
-const norm = (s?: string | null) => (s ?? '').toLowerCase()
+import type { OrgPerson, KasiGroup } from './types';
 
 export function splitStructure(people: OrgPerson[]) {
-  // --- LURAH ---
-  const lurah =
-    people.find(
-      (p) =>
-        p.unit === 'LURAH' ||
-        norm(p.position).includes('lurah')
-    ) ?? null
+  // 1. LURAH
+  const lurah = people.find((p) => p.unit === 'LURAH' && p.roleCategory === 'MAIN') ?? null;
 
-  // --- SEKRETARIS LURAH ---
-  const seklur =
-    people.find(
-      (p) =>
-        p.unit === 'SEKLUR' ||
-        norm(p.position).includes('sekretaris lurah') ||
-        norm(p.position).includes('sekretaris kelurahan') ||
-        norm(p.position).includes('seklur')
-    ) ?? null
+  // 2. SEKRETARIS LURAH
+  const seklur = people.find((p) => p.unit === 'SEKLUR' && p.roleCategory === 'MAIN') ?? null;
 
-  // --- DEFINISI KASI (3 kotak seksi) ---
-  const seksiDefs: { key: string; label: string; unit: OrgUnit }[] = [
+  // 3. STAFF SEKRETARIS LURAH
+  const seklurStaff = people.filter((p) => p.unit === 'SEKLUR' && p.roleCategory === 'STAFF');
+
+  // 4. KASI PEMERINTAHAN
+  const kasiPemerintahan = people.find(
+    (p) => p.unit === 'KASI_PEMERINTAHAN' && p.roleCategory === 'MAIN'
+  ) ?? null;
+  const kasiPemerintahanStaff = people.filter(
+    (p) => p.unit === 'KASI_PEMERINTAHAN' && p.roleCategory === 'STAFF'
+  );
+
+  // 5. KASI KESEJAHTERAAN
+  const kasiKesejahteraan = people.find(
+    (p) => p.unit === 'KASI_KESEJAHTERAAN' && p.roleCategory === 'MAIN'
+  ) ?? null;
+  const kasiKesejahteraanStaff = people.filter(
+    (p) => p.unit === 'KASI_KESEJAHTERAAN' && p.roleCategory === 'STAFF'
+  );
+
+  // 6. KASI PELAYANAN UMUM
+  const kasiPelayanan = people.find(
+    (p) => p.unit === 'KASI_PELAYANAN_UMUM' && p.roleCategory === 'MAIN'
+  ) ?? null;
+  const kasiPelayananStaff = people.filter(
+    (p) => p.unit === 'KASI_PELAYANAN_UMUM' && p.roleCategory === 'STAFF'
+  );
+
+  // 7. MITRA EKSTERNAL / UNIT PENDUKUNG
+  const mitraEksternal = people.filter((p) => p.unit === 'MITRA_EKSTERNAL');
+
+  // Kelompokkan Kasi
+  const kasi: KasiGroup[] = [
     {
-      key: 'KASI_PEMERINTAHAN',
+      key: 'seklur',
+      label: 'Sekretaris Lurah',
+      head: seklur,
+      staff: seklurStaff,
+    },
+    {
+      key: 'pemerintahan',
       label: 'Kasi Pemerintahan & Trantib',
-      unit: 'KASI_PEMERINTAHAN',
+      head: kasiPemerintahan,
+      staff: kasiPemerintahanStaff,
     },
     {
-      key: 'KASI_KESEJAHTERAAN',
+      key: 'kesejahteraan',
       label: 'Kasi Kesejahteraan Rakyat',
-      unit: 'KASI_KESEJAHTERAAN',
+      head: kasiKesejahteraan,
+      staff: kasiKesejahteraanStaff,
     },
     {
-      key: 'KASI_PELAYANAN_UMUM',
+      key: 'pelayanan',
       label: 'Kasi Pelayanan Umum & Pemberdayaan Masyarakat',
-      unit: 'KASI_PELAYANAN_UMUM',
+      head: kasiPelayanan,
+      staff: kasiPelayananStaff,
     },
-  ]
+  ];
 
-  const kasi: KasiBlock[] = seksiDefs.map((def) => {
-    // kepala seksi: unit = X + roleCategory MAIN (ideal),
-    // atau fallback kalau diisi manual pakai teks "kasi"
-    const head =
-      people.find(
-        (p) =>
-          p.unit === def.unit &&
-          (p.roleCategory === 'MAIN' ||
-            norm(p.position).includes('kasi'))
-      ) ?? undefined
+  // Unit Pendukung - berdasarkan jabatan/position
+  const pendukung = [
+    { label: 'PLKB', person: mitraEksternal.find(p => p.position.toLowerCase().includes('plkb')) ?? null },
+    { label: 'Penyuluh Pertanian', person: mitraEksternal.find(p => p.position.toLowerCase().includes('penyuluh')) ?? null },
+    { label: 'Babinsa', person: mitraEksternal.find(p => p.position.toLowerCase().includes('babinsa')) ?? null },
+    { label: 'Babinkamtibmas', person: mitraEksternal.find(p => p.position.toLowerCase().includes('bhabin') || p.position.toLowerCase().includes('kamtib')) ?? null },
+  ].filter(item => item.person !== null);
 
-    // staf seksi: unit = X + roleCategory STAFF
-    const staff = people.filter(
-      (p) => p.unit === def.unit && p.roleCategory === 'STAFF'
-    )
-
-    return {
-      key: def.key,
-      label: def.label,
-      head,
-      staff,
-    }
-  })
-
-  // --- MITRA EKSTERNAL ---
-  const eksternal = people.filter(
-    (p) =>
-      p.roleCategory === 'EXTERNAL' ||
-      p.unit === 'MITRA_EKSTERNAL'
-  )
-
-  const isKoordinatif = (p: OrgPerson) => {
-    const pos = norm(p.position)
-    return (
-      pos.includes('babinsa') ||
-      pos.includes('bhabin') ||
-      pos.includes('bhabinkamtibmas')
-    )
-  }
-
-  const isPLKB = (p: OrgPerson) => norm(p.position).includes('plkb')
-
-  const isPenyuluh = (p: OrgPerson) =>
-    norm(p.position).includes('penyuluh')
-
-  // Babinsa + Bhabinkamtibmas → sisi kiri/kanan Lurah
-  const koordinatif = eksternal.filter(isKoordinatif)
-
-  // Unit pendukung: PLKB, Penyuluh, dan sisanya kalau ada
-  const pendukungRaw: PendukungBlock[] = []
-
-  const plkb = eksternal.find(isPLKB)
-  if (plkb) pendukungRaw.push({ label: 'PLKB', person: plkb })
-
-  const penyuluh = eksternal.find(isPenyuluh)
-  if (penyuluh)
-    pendukungRaw.push({
-      label: 'Penyuluh Pertanian',
-      person: penyuluh,
-    })
-
-  // eksternal lain yang bukan babinsa/bhabin/plkb/penyuluh
-  eksternal
-    .filter(
-      (p) =>
-        !isKoordinatif(p) && !isPLKB(p) && !isPenyuluh(p)
-    )
-    .forEach((p) => {
-      pendukungRaw.push({
-        label: 'Mitra Eksternal',
-        person: p,
-      })
-    })
-
-  // hapus duplikat by id biar nggak dobel kalau nyangkut di dua kategori
-  const seen = new Set<string>()
-  const pendukung = pendukungRaw.filter((blk) => {
-    if (seen.has(blk.person.id)) return false
-    seen.add(blk.person.id)
-    return true
-  })
+  // Koordinatif (jika masih ingin digunakan)
+  const koordinatif = mitraEksternal.filter(p => 
+    p.position.toLowerCase().includes('babinsa') || 
+    p.position.toLowerCase().includes('bhabin') ||
+    p.position.toLowerCase().includes('kamtib')
+  );
 
   return {
     lurah,
     seklur,
     kasi,
-    koordinatif,
     pendukung,
-  }
+    koordinatif,
+  };
 }

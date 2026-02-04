@@ -1,3 +1,6 @@
+//src/features/struktur/ui/StrukturDialog.tsx
+
+
 'use client'
 
 import { useState, useEffect } from 'react'

@@ -1,3 +1,5 @@
+//src/features/struktur/ui/StaffGroup.tsx
+
 'use client';
 
 import { useState } from 'react';

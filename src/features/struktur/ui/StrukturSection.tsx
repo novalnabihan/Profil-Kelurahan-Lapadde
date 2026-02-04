@@ -18,8 +18,8 @@ export default async function StrukturSection() {
     id: p.id,
     name: p.name,
     position: p.position,
-    unit: p.unit ?? null,              // ✅ OrgUnit | null
-    roleCategory: p.roleCategory ?? null, // ✅ RoleCategory | null
+    unit: p.unit ?? null,
+    roleCategory: p.roleCategory ?? null,
     nip: p.nip ?? null,
     phone: p.phone ?? null,
     photoUrl: p.photoUrl ?? null,
@@ -31,14 +31,12 @@ export default async function StrukturSection() {
       id="struktur"
       className="py-12 sm:py-16 bg-[#f8f9fa] border-t border-[#e2e8f0]"
     >
-      <div className="max-w-[1140px] mx-auto px-6">
-        <h2 className="text-[22px] sm:text-[24px] font-semibold text-[#1a202c] mb-2">
-          Struktur Organisasi
-        </h2>
-        <p className="text-[14px] sm:text-[15px] text-[#718096] mb-8 max-w-2xl">
-          Susunan Lurah, Sekretaris Lurah, Kepala Seksi, serta staf dan unit
-          pendukung di Kelurahan Lapadde.
-        </p>
+      <div className="max-w-[1140px] mx-auto px-4 sm:px-6">
+        <div className="text-center mb-10 sm:mb-12">
+          <h2 className="text-[24px] sm:text-[28px] font-bold text-[#1a202c] mb-2">
+            Struktur Organisasi
+          </h2>
+        </div>
 
         {orgPeople.length === 0 ? (
           <div className="bg-white border border-dashed border-[#e2e8f0] rounded-lg p-8 text-center">
