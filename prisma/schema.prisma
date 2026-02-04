@@ -8,6 +8,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//
+// 🔹 ENUMS BARU UNTUK STRUKTUR ORGANISASI
+//
+enum OrgUnit {
+  LURAH                    // Lurah
+  SEKLUR                   // Sekretariat Kelurahan
+  KASI_PEMERINTAHAN        // Pemerintahan & Trantib
+  KASI_KESEJAHTERAAN       // Kesejahteraan Rakyat
+  KASI_PELAYANAN_UMUM      // Pelayanan Umum & Pemberdayaan
+  MITRA_EKSTERNAL          // Babinsa, Bhabinkamtibmas, PLKB, dll
+}
+
+
+enum RoleCategory {
+  MAIN      // inti (Lurah, Seklur, Kasi)
+  STAFF     // staf pelaksana di kelurahan
+  EXTERNAL  // mitra eksternal (Babinsa, Bhabinkamtibmas, dll)
+}
+
+//
+// 🔹 MODELS
+//
 model SiteProfile {
   id            String   @id @default(uuid())
   about         String?
@@ -33,12 +55,16 @@ model Facility {
 }
 
 model Struktur {
-  id        String   @id @default(uuid())
-  name      String
-  position  String
-  photoUrl  String?
-  order     Int
-  createdAt DateTime @default(now())
+  id           String       @id @default(uuid())
+  name         String
+  position     String
+  unit         OrgUnit?      // sementara optional biar migrasi aman
+  roleCategory RoleCategory? // sementara optional
+  nip          String?
+  phone        String?
+  photoUrl     String?
+  order        Int
+  createdAt    DateTime @default(now())
 }
 
 model RtRw {
@@ -83,6 +109,6 @@ model Event {
 }
 
 model Admin {
-  id    String @id      // Supabase User UID
-  email String @unique  // Email admin
+  id    String @id     // Supabase User UID
+  email String @unique // Email admin
 }

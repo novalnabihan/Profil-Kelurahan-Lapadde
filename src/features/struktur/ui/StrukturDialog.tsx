@@ -12,9 +12,16 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Loader2 } from 'lucide-react'
 import ImageUpload from '@/components/admin/ImageUpload'
-import { Struktur } from '@/generated/prisma'
+import { Struktur, RoleCategory, OrgUnit } from '@/generated/prisma'
 
 interface StrukturDialogProps {
   open: boolean
@@ -30,25 +37,31 @@ export default function StrukturDialog({
   onSuccess,
 }: StrukturDialogProps) {
   const [loading, setLoading] = useState(false)
+
   const [name, setName] = useState('')
   const [position, setPosition] = useState('')
-  const [photoUrl, setPhotoUrl] = useState('')
+  const [roleCategory, setRoleCategory] = useState<RoleCategory | ''>('')
+  const [unit, setUnit] = useState<OrgUnit | ''>('')
   const [order, setOrder] = useState(0)
+  const [photoUrl, setPhotoUrl] = useState('')
 
-  // Reset form when dialog opens/closes or editData changes
   useEffect(() => {
-    if (open) {
-      if (editData) {
-        setName(editData.name)
-        setPosition(editData.position)
-        setPhotoUrl(editData.photoUrl || '')
-        setOrder(editData.order)
-      } else {
-        setName('')
-        setPosition('')
-        setPhotoUrl('')
-        setOrder(0)
-      }
+    if (!open) return
+
+    if (editData) {
+      setName(editData.name)
+      setPosition(editData.position)
+      setRoleCategory(editData.roleCategory ?? '')
+      setUnit(editData.unit ?? '')
+      setOrder(editData.order)
+      setPhotoUrl(editData.photoUrl || '')
+    } else {
+      setName('')
+      setPosition('')
+      setRoleCategory('')
+      setUnit('')
+      setOrder(0)
+      setPhotoUrl('')
     }
   }, [open, editData])
 
@@ -57,30 +70,27 @@ export default function StrukturDialog({
     setLoading(true)
 
     try {
-      const url = editData
-        ? `/api/struktur/${editData.id}`
-        : '/api/struktur'
+      const res = await fetch(
+        editData ? `/api/struktur/${editData.id}` : '/api/struktur',
+        {
+          method: editData ? 'PATCH' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            position,
+            roleCategory: roleCategory || null,
+            unit: unit || null,
+            order,
+            photoUrl: photoUrl || null,
+          }),
+        }
+      )
 
-      const method = editData ? 'PATCH' : 'POST'
-
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name,
-          position,
-          photoUrl: photoUrl || null,
-          order: Number(order),
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Save failed')
-      }
+      if (!res.ok) throw new Error('Save failed')
 
       onSuccess()
-    } catch (error) {
-      console.error('Save error:', error)
+    } catch (err) {
+      console.error(err)
       alert('Gagal menyimpan data')
     } finally {
       setLoading(false)
@@ -89,69 +99,99 @@ export default function StrukturDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {editData ? 'Edit Anggota' : 'Tambah Anggota Baru'}
+            {editData ? 'Edit Anggota Struktur' : 'Tambah Anggota Struktur'}
           </DialogTitle>
           <DialogDescription>
-            {editData
-              ? 'Perbarui informasi anggota struktur organisasi'
-              : 'Tambahkan anggota baru ke struktur organisasi'}
+            Tentukan posisi, kategori jabatan, dan unit kerja.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Nama */}
           <div className="space-y-2">
-            <Label htmlFor="name">Nama Lengkap</Label>
+            <Label>Nama Lengkap</Label>
             <Input
-              id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Contoh: Drs. Ahmad Santoso, M.Si"
               required
             />
           </div>
 
-          {/* Posisi */}
+          {/* Jabatan */}
           <div className="space-y-2">
-            <Label htmlFor="position">Posisi/Jabatan</Label>
+            <Label>Jabatan</Label>
             <Input
-              id="position"
               value={position}
               onChange={(e) => setPosition(e.target.value)}
-              placeholder="Contoh: Lurah"
               required
             />
+          </div>
+
+          {/* Role Category */}
+          <div className="space-y-2">
+            <Label>Kategori Jabatan</Label>
+            <Select
+              value={roleCategory}
+              onValueChange={(v) => setRoleCategory(v as RoleCategory)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Pilih kategori" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(RoleCategory).map((v) => (
+                  <SelectItem key={v} value={v}>
+                    {v.replaceAll('_', ' ')}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Unit */}
+          <div className="space-y-2">
+            <Label>Unit Kerja</Label>
+            <Select
+              value={unit}
+              onValueChange={(v) => setUnit(v as OrgUnit)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Pilih unit" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(OrgUnit).map((v) => (
+                  <SelectItem key={v} value={v}>
+                    {v.replaceAll('_', ' ')}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Order */}
           <div className="space-y-2">
-            <Label htmlFor="order">Urutan</Label>
+            <Label>Urutan</Label>
             <Input
-              id="order"
               type="number"
+              min={0}
               value={order}
               onChange={(e) => setOrder(Number(e.target.value))}
-              placeholder="0"
               required
-              min="0"
             />
             <p className="text-xs text-[#718096]">
-              Urutan tampilan (0 = paling atas, dst)
+              Angka kecil tampil lebih atas
             </p>
           </div>
 
-          {/* Photo */}
-          <div className="space-y-2">
-            <ImageUpload
-              value={photoUrl}
-              onChange={setPhotoUrl}
-              folder="struktur"
-              label="Foto"
-            />
-          </div>
+          {/* Foto */}
+          <ImageUpload
+            value={photoUrl}
+            onChange={setPhotoUrl}
+            folder="struktur"
+            label="Foto"
+          />
 
           <DialogFooter>
             <Button
@@ -169,7 +209,7 @@ export default function StrukturDialog({
             >
               {loading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Menyimpan...
                 </>
               ) : (

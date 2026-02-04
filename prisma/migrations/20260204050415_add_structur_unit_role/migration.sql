@@ -1,0 +1,11 @@
+-- CreateEnum
+CREATE TYPE "OrgUnit" AS ENUM ('LURAH', 'SEKLUR', 'KASI_PEMERINTAHAN', 'KASI_KESEJAHTERAAN', 'KASI_PELAYANAN_UMUM', 'PLKB', 'PENYULUH_PERTANIAN', 'BABINSA', 'BHABINKAMTIBMAS');
+
+-- CreateEnum
+CREATE TYPE "RoleCategory" AS ENUM ('MAIN', 'STAFF', 'EXTERNAL');
+
+-- AlterTable
+ALTER TABLE "Struktur" ADD COLUMN     "nip" TEXT,
+ADD COLUMN     "phone" TEXT,
+ADD COLUMN     "roleCategory" "RoleCategory",
+ADD COLUMN     "unit" "OrgUnit";
