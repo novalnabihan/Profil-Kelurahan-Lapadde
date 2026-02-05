@@ -5,10 +5,9 @@ import MainFooter from '@/components/layout/MainFooter';
 import HeroSection from '@/features/site/ui/HeroSection';
 import VisionMissionSection from '@/features/site/ui/VisionMissionSection';
 import StrukturSection from '@/features/struktur/ui/StrukturSection';
-import EventsPreviewSection from '@/features/events/ui/EventsPreviewSection';
+import { getHeroStats } from '@/features/site/data/getHeroStats'
 import PetaSimpleSection from '@/features/peta/ui/PetaSimpleSection';
 import AlurPengaduanSection from '@/features/alur-pengaduan/ui/AlurPengaduanSection';
-import DenahKantorSection from '@/features/denah-kantor/ui/DenahKantorSection';
 import prisma from '@/lib/prisma';
 
 async function getHomeData() {
@@ -43,19 +42,18 @@ async function getHomeData() {
   };
 }
 
+export const dynamic = 'force-dynamic' // optional: kalau stats sering berubah
+
 export default async function HomePage() {
   const data = await getHomeData();
+  const stats = await getHeroStats()
 
   return (
     <>
       <MainNavbar />
       <main>
-        <HeroSection stats={{
-          rtRwCount: data.stats.rwCount,
-          population: 4823,
-          familyCount: 1245,
-          area: '3.2 km²',
-        }} />
+        <HeroSection stats={stats} />
+
         {/* <ServicesSection /> */}
         <VisionMissionSection
           vision={data.profile?.vision}
