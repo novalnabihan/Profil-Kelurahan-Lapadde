@@ -84,26 +84,14 @@ export default function MainNavbar() {
         isScrolled ? 'shadow-sm' : 'shadow-none'
       } transition-shadow`}
     >
-      {/* Top bar hijau */}
-      {/* <div className="bg-[#8b9474] py-2">
-        <div className="max-w-[1140px] mx-auto px-6">
-          <p className="text-white text-[13px]">
-            Selamat datang di website resmi Kelurahan Lapadde
-          </p>
-        </div>
-      </div> */}
 
       {/* Brand row */}
       <div className="max-w-[1140px] mx-auto px-6 py-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-[#8b9474] rounded flex-shrink-0" />
           <div>
             <h1 className="text-[18px] font-semibold text-[#1a202c] leading-tight">
               Website Profil Kelurahan Lapadde
             </h1>
-            <p className="text-[13px] text-[#718096] mt-0.5">
-              Kecamatan Batam Kota
-            </p>
           </div>
         </div>
       </div>

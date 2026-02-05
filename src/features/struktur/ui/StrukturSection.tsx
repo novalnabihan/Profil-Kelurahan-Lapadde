@@ -32,8 +32,8 @@ export default async function StrukturSection() {
       className="py-12 sm:py-16 bg-[#f8f9fa] border-t border-[#e2e8f0]"
     >
       <div className="max-w-[1140px] mx-auto px-4 sm:px-6">
-        <div className="text-center mb-10 sm:mb-12">
-          <h2 className="text-[24px] sm:text-[28px] font-bold text-[#1a202c] mb-2">
+        <div className="mb-9 sm:mb-12">
+          <h2 className="text-[28px] sm:text-[28px] font-bold text-[#1a202c] mb-2">
             Struktur Organisasi
           </h2>
         </div>

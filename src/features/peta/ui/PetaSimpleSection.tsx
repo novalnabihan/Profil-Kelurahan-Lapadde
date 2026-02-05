@@ -43,7 +43,7 @@ export default function PetaSimpleSection() {
   return (
     <section className="py-14 bg-white scroll-mt-[120px]" id="peta">
       <div className="max-w-[1140px] mx-auto px-6">
-        <h2 className="text-[22px] font-semibold text-[#1a202c] mb-8">
+        <h2 className="text-[28px] font-bold text-[#1a202c] mb-8">
           Peta Wilayah Kelurahan
         </h2>
 
@@ -63,7 +63,6 @@ export default function PetaSimpleSection() {
             href="/peta-lapadde"
             className="bg-[#8b9474] text-white px-6 py-3 rounded-lg font-medium text-[14px] hover:bg-[#6d7558] transition-colors whitespace-nowrap flex items-center gap-2 justify-center md:self-end"
           >
-            <span>🗺️</span>
             <span>Lihat Peta Lengkap</span>
           </Link>
         </div>
