@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Profile Kelurahan Lapadde",
   description: "Website Profile Kelurahan Lapadde",
+  verification:{
+    google: "7OfHKnWveSG6x9Pn1J1TaKnMK2S3kcUhRX-8wyXQCto"
+  }
 };
 
 export default function RootLayout({
