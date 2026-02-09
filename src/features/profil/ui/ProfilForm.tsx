@@ -19,7 +19,6 @@ export default function ProfilForm({ profile }: ProfilFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
-  const [activeTab, setActiveTab] = useState('tentang')
 
   // Form state
   const [about, setAbout] = useState(profile.about || '')
@@ -68,47 +67,15 @@ export default function ProfilForm({ profile }: ProfilFormProps) {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         {/* Tab Navigation */}
         <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 h-auto">
-          <TabsTrigger value="tentang" className="text-sm">
-            Tentang
-          </TabsTrigger>
+
           <TabsTrigger value="visi-misi" className="text-sm">
             Visi & Misi
-          </TabsTrigger>
-          <TabsTrigger value="denah" className="text-sm">
-            Denah Kantor
           </TabsTrigger>
           <TabsTrigger value="alur" className="text-sm">
             Alur Pengaduan
           </TabsTrigger>
         </TabsList>
 
-        {/* Tab: Tentang */}
-        <TabsContent value="tentang">
-          <Card>
-            <CardHeader>
-              <CardTitle>Tentang Kelurahan</CardTitle>
-              <CardDescription>
-                Informasi umum tentang kelurahan (sejarah, profil, dll)
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Label htmlFor="about">Konten Tentang</Label>
-                <Textarea
-                  id="about"
-                  placeholder="Tulis informasi tentang kelurahan..."
-                  value={about}
-                  onChange={(e) => setAbout(e.target.value)}
-                  rows={12}
-                  className="resize-none"
-                />
-                <p className="text-xs text-[#718096]">
-                  Tulis dengan format paragraf. Tekan Enter untuk baris baru.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         {/* Tab: Visi & Misi */}
         <TabsContent value="visi-misi">
@@ -151,26 +118,6 @@ Menjaga keamanan lingkungan"
                   Tulis satu misi per baris (tekan Enter untuk poin baru)
                 </p>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Tab: Denah Kantor */}
-        <TabsContent value="denah">
-          <Card>
-            <CardHeader>
-              <CardTitle>Denah Kantor</CardTitle>
-              <CardDescription>
-                Upload gambar denah/layout kantor kelurahan
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ImageUpload
-                value={officeMap}
-                onChange={setOfficeMap}
-                folder="profile"
-                label="Denah Kantor"
-              />
             </CardContent>
           </Card>
         </TabsContent>
