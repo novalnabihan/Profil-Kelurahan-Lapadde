@@ -8,6 +8,8 @@ async function getAlurData() {
   return profile;
 }
 
+export const dynamic = 'force-dynamic' // optional: kalau stats sering berubah
+
 export default async function AlurPengaduanSection() {
   const profile = await getAlurData();
 

@@ -141,7 +141,7 @@ export default function OrgChart({ people }: OrgChartProps) {
           <h3 className="text-[18px] sm:text-[17px] font-semibold text-[#1a202c] mb-6 text-center">
             Unit Pendukung
           </h3>
-          <div className="grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 sm:gap-5 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
             {pendukung.map(({ label, person }) =>
               person ? (
                 <OrgCard

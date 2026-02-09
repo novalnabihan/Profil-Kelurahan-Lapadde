@@ -4,6 +4,8 @@ import prisma from '@/lib/prisma'
 import OrgChart from './OrgChart'
 import type { OrgPerson } from '../types'
 
+export const dynamic = 'force-dynamic' // optional: kalau stats sering berubah
+
 export default async function StrukturSection() {
   const people = await prisma.struktur.findMany({
     orderBy: [

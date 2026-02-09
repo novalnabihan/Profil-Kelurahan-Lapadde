@@ -3,6 +3,8 @@ interface VisionMissionProps {
   mission?: string | null;
 }
 
+export const dynamic = 'force-dynamic'
+
 export default function VisionMissionSection({ vision, mission }: VisionMissionProps) {
   const defaultVision = "Terwujudnya Kelurahan Lapadde yang Sejahtera, Aman, Nyaman, dan Berbudaya";
   const defaultMission = [
