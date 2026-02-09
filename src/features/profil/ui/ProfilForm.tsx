@@ -19,6 +19,7 @@ export default function ProfilForm({ profile }: ProfilFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [activeTab, setActiveTab] = useState('visi-misi')
 
   // Form state
   const [about, setAbout] = useState(profile.about || '')
@@ -67,7 +68,6 @@ export default function ProfilForm({ profile }: ProfilFormProps) {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         {/* Tab Navigation */}
         <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 h-auto">
-
           <TabsTrigger value="visi-misi" className="text-sm">
             Visi & Misi
           </TabsTrigger>
@@ -76,6 +76,7 @@ export default function ProfilForm({ profile }: ProfilFormProps) {
           </TabsTrigger>
         </TabsList>
 
+ 
 
         {/* Tab: Visi & Misi */}
         <TabsContent value="visi-misi">
@@ -122,6 +123,7 @@ Menjaga keamanan lingkungan"
           </Card>
         </TabsContent>
 
+  
         {/* Tab: Alur Pengaduan */}
         <TabsContent value="alur">
           <Card>
