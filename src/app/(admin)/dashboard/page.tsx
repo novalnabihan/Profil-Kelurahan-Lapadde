@@ -63,82 +63,10 @@ export default async function DashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <Card className="border-[#e2e8f0]">
-        <CardHeader>
-          <CardTitle className="text-lg">Aksi Cepat</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Button
-              asChild
-              variant="outline"
-              className="h-auto flex-col items-start p-4 hover:bg-[#8b9474]/5 hover:border-[#8b9474]"
-            >
-              <Link href="/admin/struktur">
-                <Users className="w-5 h-5 mb-2 text-[#8b9474]" />
-                <span className="font-semibold text-sm">Kelola Struktur</span>
-                <span className="text-xs text-[#718096] mt-1">
-                  Tambah/edit struktur organisasi
-                </span>
-              </Link>
-            </Button>
-
-            <Button
-              asChild
-              variant="outline"
-              className="h-auto flex-col items-start p-4 hover:bg-[#8b9474]/5 hover:border-[#8b9474]"
-            >
-              <Link href="/admin/rt-rw">
-                <Building2 className="w-5 h-5 mb-2 text-[#8b9474]" />
-                <span className="font-semibold text-sm">Kelola RT/RW</span>
-                <span className="text-xs text-[#718096] mt-1">
-                  Tambah/edit data RT dan RW
-                </span>
-              </Link>
-            </Button>
-
-            <Button
-              asChild
-              variant="outline"
-              className="h-auto flex-col items-start p-4 hover:bg-[#8b9474]/5 hover:border-[#8b9474]"
-            >
-              <Link href="/admin/profil">
-                <Image className="w-5 h-5 mb-2 text-[#8b9474]" />
-                <span className="font-semibold text-sm">Edit Profil</span>
-                <span className="text-xs text-[#718096] mt-1">
-                  Update visi, misi, dan info
-                </span>
-              </Link>
-            </Button>
-
-            <Button
-              asChild
-              variant="outline"
-              className="h-auto flex-col items-start p-4 hover:bg-[#8b9474]/5 hover:border-[#8b9474]"
-            >
-              <Link href="/admin/peta">
-                <MapPin className="w-5 h-5 mb-2 text-[#8b9474]" />
-                <span className="font-semibold text-sm">Kelola Peta</span>
-                <span className="text-xs text-[#718096] mt-1">
-                  Tambah/edit lokasi fasilitas
-                </span>
-              </Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+ 
 
       {/* Recent Activity - Optional */}
-      <Card className="border-[#e2e8f0]">
-        <CardHeader>
-          <CardTitle className="text-lg">Aktivitas Terbaru</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-8 text-[#718096]">
-            <p className="text-sm">Belum ada aktivitas terbaru</p>
-          </div>
-        </CardContent>
-      </Card>
+
     </div>
   )
 }
