@@ -10,6 +10,9 @@ import PetaSimpleSection from '@/features/peta/ui/PetaSimpleSection';
 import AlurPengaduanSection from '@/features/alur-pengaduan/ui/AlurPengaduanSection';
 import prisma from '@/lib/prisma';
 
+export const runtime = 'nodejs'
+
+
 async function getHomeData() {
   // Fetch site profile
   const profile = await prisma.siteProfile.findFirst();
